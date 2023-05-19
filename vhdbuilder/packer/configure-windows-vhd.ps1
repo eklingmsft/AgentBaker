@@ -181,7 +181,7 @@ function Get-ContainerImages {
 
             Write-Log "Loading image $image from $tmpDest"
             Retry-Command -ScriptBlock {
-                & ctr -n k8s.io images import --digests -snapshotter cimfs $tmpDest
+                & ctr -n k8s.io images import $tmpDest
             } -ErrorMessage "Failed to load image $image from $tmpDest"
 
             Write-Log "Removing tmp tar file $tmpDest"
