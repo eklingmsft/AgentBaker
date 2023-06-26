@@ -70,7 +70,7 @@ installKataDeps() {
       echo "install mshv packages from storage account"
       wget "https://mitchzhu.blob.core.windows.net/public/mshv-bootloader-25357.1.230428-1528.1.cm2.x86_64.rpm" -O mshv-bootloader-25357.1.230428-1528.1.cm2.x86_64.rpm
       wget "https://mitchzhu.blob.core.windows.net/public/mshv-linuxloader-0.5.0-2.3.cm2.x86_64.rpm" -O mshv-linuxloader-0.5.0-2.3.cm2.x86_64.rpm
-      wget "https://mitchzhu.blob.core.windows.net/public/mshv-25357.1.230428-1528.2.cm2.x86_64.rpm" -O mshv-25357.1.230428-1528.2.cm2.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/mshv-old-dep.x86_64.rpm" -O mshv-25357.1.230428-1528.2.cm2.x86_64.rpm
       rpm -ihv mshv-bootloader-25357.1.230428-1528.1.cm2.x86_64.rpm
       rpm -ihv mshv-linuxloader-0.5.0-2.3.cm2.x86_64.rpm
       rpm -ihv mshv-25357.1.230428-1528.2.cm2.x86_64.rpm
