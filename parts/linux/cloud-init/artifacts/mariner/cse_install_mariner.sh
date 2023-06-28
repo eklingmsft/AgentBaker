@@ -34,11 +34,11 @@ installKataDeps() {
       done
 
       echo "install UVM build pipeline artifacts from storage account"
-      wget "https://mitchzhu.blob.core.windows.net/public/igvm-measurement-6-28-1" -O igvm-measurement
-      wget "https://mitchzhu.blob.core.windows.net/public/igvm-6-28-1.bin" -O igvm.bin
-      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-initrd-6-28-1.img" -O kata-containers-initrd.img
+      wget "https://mitchzhu.blob.core.windows.net/public/cloud-hypervisor-igvm-6-28-2" -O igvm-measurement
+      wget "https://mitchzhu.blob.core.windows.net/public/igvm-debug.bin" -O igvm-debug.bin
+      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-initrd-6-28-2.img" -O kata-containers-initrd.img
       mkdir -p /opt/confidential-containers/share/kata-containers/
-      mv igvm.bin /opt/confidential-containers/share/kata-containers/igvm.bin
+      mv igvm-debug.bin /opt/confidential-containers/share/kata-containers/igvm-debug.bin
       mv igvm-measurement /opt/confidential-containers/share/kata-containers/igvm-measurement
       mv kata-containers-initrd.img /opt/confidential-containers/share/kata-containers/kata-containers-initrd.img
 
@@ -49,21 +49,21 @@ installKataDeps() {
       chmod 777 /opt/confidential-containers/bin/cloud-hypervisor-igvm
 
       echo "install kata-cc packages from storage account"
-      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-cc-0.4.1-2.cm2.x86_64.rpm" -O kata-containers-cc-0.4.1-2.cm2.x86_64.rpm
-      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-cc-tools-0.4.1-2.cm2.x86_64.rpm" -O kata-containers-cc-tools-0.4.1-2.cm2.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-cc-0.4.2-1.cm2.x86_64.rpm" -O kata-containers-cc-0.4.2-1.cm2.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-cc-tools-0.4.2-1.cm2.x86_64.rpm" -O kata-containers-cc-tools-0.4.2-1.cm2.x86_64.rpm
       wget "https://kataccstorage.blob.core.windows.net/confidential-containers/igvm-generator-0.0.1-3.cm2.x86_64.rpm" -O igvm-generator-0.0.1-3.cm2.x86_64.rpm
-      wget "https://mitchzhu.blob.core.windows.net/public/kernel-uvm-5.15.110.mshv2-1.cm2.x86_64.rpm" -O kernel-uvm-5.15.110.mshv2-1.cm2.x86_64.rpm
-      wget "https://mitchzhu.blob.core.windows.net/public/kernel-uvm-devel-5.15.110.mshv2-1.cm2.x86_64.rpm" -O kernel-uvm-devel-5.15.110.mshv2-1.cm2.x86_64.rpm
-      rpm -ihv kernel-uvm-5.15.110.mshv2-1.cm2.x86_64.rpm
-      rpm -ihv kernel-uvm-devel-5.15.110.mshv2-1.cm2.x86_64.rpm
-      rpm -ihv kata-containers-cc-0.4.1-2.cm2.x86_64.rpm
-      rpm -ihv kata-containers-cc-tools-0.4.1-2.cm2.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/kernel-uvm-5.15.110.mshv2-2.cm2.x86_64.rpm" -O kernel-uvm-5.15.110.mshv2-2.cm2.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/kernel-uvm-devel-5.15.110.mshv2-2.cm2.x86_64.rpm" -O kernel-uvm-devel-5.15.110.mshv2-2.cm2.x86_64.rpm
+      rpm -ihv kernel-uvm-5.15.110.mshv2-2.cm2.x86_64.rpm
+      rpm -ihv kernel-uvm-devel-5.15.110.mshv2-2.cm2.x86_64.rpm
+      rpm -ihv kata-containers-cc-0.4.2-1.cm2.x86_64.rpm
+      rpm -ihv kata-containers-cc-tools-0.4.2-1.cm2.x86_64.rpm
       rpm -ihv igvm-generator-0.0.1-3.cm2.x86_64.rpm
-      rm kata-containers-cc-0.4.1-2.cm2.x86_64.rpm
-      rm kata-containers-cc-tools-0.4.1-2.cm2.x86_64.rpm
+      rm kata-containers-cc-0.4.2-1.cm2.x86_64.rpm
+      rm kata-containers-cc-tools-0.4.2-1.cm2.x86_64.rpm
       rm igvm-generator-0.0.1-3.cm2.x86_64.rpm
-      rm kernel-uvm-5.15.110.mshv2-1.cm2.x86_64.rpm
-      rm kernel-uvm-devel-5.15.110.mshv2-1.cm2.x86_64.rpm
+      rm kernel-uvm-5.15.110.mshv2-2.cm2.x86_64.rpm
+      rm kernel-uvm-devel-5.15.110.mshv2-2.cm2.x86_64.rpm
 
       echo "install mshv packages from storage account"
       wget "https://mitchzhu.blob.core.windows.net/public/mshv-bootloader-25357.1.230428-1528.1.cm2.x86_64.rpm" -O mshv-bootloader-25357.1.230428-1528.1.cm2.x86_64.rpm
@@ -80,8 +80,11 @@ installKataDeps() {
       mkdir -p /var/lib/containerd/io.containerd.snapshotter.v1.tardev/staging
 
       echo "append kata-cc config to enable IGVM"
-      sed -i '/image =/a igvm = "/opt/confidential-containers/share/kata-containers/igvm.bin"' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
+      sed -i '/image =/a igvm = "/opt/confidential-containers/share/kata-containers/igvm-debug.bin"' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
       sed -i 's/cloud-hypervisor/cloud-hypervisor-igvm/g' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
+      # Comment out image and kernel configs
+      sed -i 's/kernel = /#kernel = /g' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
+      sed -i 's/image = /#image = /g' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
     fi
 }
 
