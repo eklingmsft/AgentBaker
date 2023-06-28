@@ -34,15 +34,13 @@ installKataDeps() {
       done
 
       echo "install UVM build pipeline artifacts from storage account"
-      wget "https://mitchzhu.blob.core.windows.net/public/igvm-measurement" -O igvm-measurement
-      wget "https://mitchzhu.blob.core.windows.net/public/igvm.bin" -O igvm.bin
-      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-initrd.img" -O kata-containers-initrd.img
-      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers.img" -O kata-containers.img
+      wget "https://mitchzhu.blob.core.windows.net/public/igvm-measurement-6-28-1" -O igvm-measurement
+      wget "https://mitchzhu.blob.core.windows.net/public/igvm-6-28-1.bin" -O igvm.bin
+      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-initrd-6-28-1.img" -O kata-containers-initrd.img
       mkdir -p /opt/confidential-containers/share/kata-containers/
       mv igvm.bin /opt/confidential-containers/share/kata-containers/igvm.bin
       mv igvm-measurement /opt/confidential-containers/share/kata-containers/igvm-measurement
       mv kata-containers-initrd.img /opt/confidential-containers/share/kata-containers/kata-containers-initrd.img
-      mv kata-containers.img /opt/confidential-containers/share/kata-containers/kata-containers.img
 
       echo "install cloud-hypervisor-igvm from storage account"
       wget "https://mitchzhu.blob.core.windows.net/public/cloud-hypervisor-igvm" -O cloud-hypervisor-igvm
