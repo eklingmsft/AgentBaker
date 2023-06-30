@@ -25,6 +25,47 @@ installDeps() {
     fi
 }
 
+installKataDeps() {
+    if [[ $OS_VERSION == "2.0" ]]; then
+      for dnf_package in cargo opa parted qemu-img moby-runc python3-devel python3-pip kernel-mshv cloud-hypervisor kata-containers moby-containerd-cc mshv-bootloader mshv-linuxloader mshv; do
+        if ! dnf_install 30 1 600 $dnf_package; then
+          exit $ERR_APT_INSTALL_TIMEOUT
+        fi
+      done
+
+      echo "Install UVM build pipeline artifacts"
+      mkdir -p /opt/confidential-containers/share/kata-containers/
+      mv igvm-debug.bin /opt/confidential-containers/share/kata-containers/igvm-debug.bin
+      mv igvm-measurement /opt/confidential-containers/share/kata-containers/igvm-measurement
+      mv kata-containers-initrd.img /opt/confidential-containers/share/kata-containers/kata-containers-initrd.img
+
+      echo "TEMP: install cloud-hypervisor-igvm"
+      mkdir -p /opt/confidential-containers/bin/
+      mv cloud-hypervisor-igvm /opt/confidential-containers/bin/cloud-hypervisor-igvm
+      chmod 755 /opt/confidential-containers/bin/cloud-hypervisor-igvm
+
+      echo "TEMP: install kata-cc packages from storage account"
+      wget "https://mitchzhu.blob.core.windows.net/public/kernel-uvm-5.15.110.mshv2-2.cm2.x86_64.rpm" -O kernel-uvm.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/kernel-uvm-devel-5.15.110.mshv2-2.cm2.x86_64.rpm" -O kernel-uvm-devel.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-cc-0.4.2-1.cm2.x86_64.rpm" -O kata-containers-cc.x86_64.rpm
+      wget "https://mitchzhu.blob.core.windows.net/public/kata-containers-cc-tools-0.4.2-1.cm2.x86_64.rpm" -O kata-containers-cc-tools.x86_64.rpm
+      rpm -ihv kernel-uvm.x86_64.rpm
+      rpm -ihv kernel-uvm-devel.x86_64.rpm
+      rpm -ihv kata-containers-cc.x86_64.rpm
+      rpm -ihv kata-containers-cc-tools.x86_64.rpm
+
+      echo "Create snapshotter dir"
+      mkdir -p /var/lib/containerd/io.containerd.snapshotter.v1.tardev/staging
+
+      echo "Append kata-cc config to enable IGVM"
+      sed -i '/image =/a igvm = "/opt/confidential-containers/share/kata-containers/igvm-debug.bin"' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
+      sed -i 's/cloud-hypervisor/cloud-hypervisor-igvm/g' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
+      # Comment out image and kernel configs
+      sed -i 's/kernel = /#kernel = /g' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
+      sed -i 's/image = /#image = /g' /opt/confidential-containers/share/defaults/kata-containers/configuration-clh.toml
+    fi
+}
+
 downloadGPUDrivers() {
     # Mariner CUDA rpm name comes in the following format:
     #
